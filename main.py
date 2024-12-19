@@ -8,7 +8,6 @@ from telegram.ext import Application, MessageHandler, filters
 from io import BytesIO
 
 
-
 # Функция для скачивания трека и обложки
 def download_track(url):
     ydl_opts = {
@@ -36,13 +35,13 @@ def set_mp3_tags(file_path, title, artist, thumbnail_url):
         response = requests.get(thumbnail_url)
         if response.status_code == 200:
             img_data = BytesIO(response.content)
-            audio.tags.add(APIC(
-                encoding=3,  # UTF-8
-                mime='image/jpeg',  # MIME-тип изображения
-                type=3,  # Обложка
-                desc='Cover',
-                data=img_data.read()
-            ))
+            audio.tags.add(
+                APIC(
+                    encoding=3,  # UTF-8
+                    mime='image/jpeg',  # MIME-тип изображения
+                    type=3,  # Обложка
+                    desc='Cover',
+                    data=img_data.read()))
     audio.save()  # Сохраняем изменения
 
 
@@ -55,7 +54,8 @@ async def start(update: Update, context):
 # Функция для обработки сообщений с ссылкой
 async def handle_message(update: Update, context) -> None:
     url = update.message.text
-    await context.bot.delete_message(chat_id=update.effective_chat.id,message_id=update.message.id)
+    await context.bot.delete_message(chat_id=update.effective_chat.id,
+                                     message_id=update.message.id)
 
     if 'soundcloud.com' in url:
         #await update.message.reply_text("Sending...")
@@ -86,7 +86,7 @@ async def handle_message(update: Update, context) -> None:
                 os.remove(file_path)
 
         except Exception as e:
-            await update.message.reply_text(f"Произошла ошибка: {e}")
+            await update.message.reply_text(f"Произошла ошибка")
     else:
         await update.message.reply_text("Send SoundCloud link")
 
